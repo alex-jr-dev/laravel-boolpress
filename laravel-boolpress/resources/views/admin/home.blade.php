@@ -14,7 +14,18 @@
                     </div>
                     @endif
 
-                    {{ __('You are logged in!') }}
+                    {{ __('Benvenuto admin ' . Auth::user()->name . ' !') }}
+
+                    <br>
+
+                    <p>
+                        All'interno del blog per ora ci sono
+                        <ul>
+                            <li>Posts: {{ $postsCount["posts"] }} </li>
+                            <li>Categories: {{ $postsCount["categories"] }} </li>
+
+                        </ul>
+                    </p>
                 </div>
             </div>
         </div>
