@@ -4,8 +4,19 @@
 <div class="container">
     <div class="text-center border border-primary rounded-left">
         <h2>TITLE: {{ $post->title }}</h2>
+        {{-- Tags --}}
+
+        <p>Tags</p>
+
+        @foreach($post->tags as $tag)
+        <span class="badge badge-primary">{{ $tag->name }}</span>
+
+        @endforeach
+
+
         <p>Contenuto: {{ $post->content }}</p>
         <p>Slug:{{ $post->slug }}</p>
+
         <p>Id:{{ $post->id }}</p>
         <p>Category: {{ $post->category ? $post->category->name : '-' }}</p>
         <p>Utente: {{ $post->user->name }} ({{ $post->user->email }})</p>

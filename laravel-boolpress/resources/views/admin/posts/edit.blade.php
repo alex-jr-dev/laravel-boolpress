@@ -68,6 +68,22 @@
                     @enderror
                 </div>
 
+                {{-- Tags --}}
+                <div class="form-group">
+                    <label for="">Tags</label>
+                    <br>
+                    @foreach($tags as $tag)
+
+                    <div class="form-check form-check-inline">
+                        <label for="form-check-label">
+                            <input class="form-check-input" name="tags[]" type="checkbox" value="{{ $tag->id}} " {{$post->tags->contains($tag) ? 'checked' : ''  }}>
+                            {{ $tag->name}}
+                        </label>
+                    </div>
+                    @endforeach
+
+                </div>
+
                 <div class="form-group">
                     <button type="submit" class="btn btn-success">
                         Salva post

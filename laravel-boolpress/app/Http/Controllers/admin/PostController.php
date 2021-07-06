@@ -7,6 +7,7 @@ use App\Post;
 use App\Category;
 use Illuminate\Support\Str;
 use App\Http\Controllers\Admin\Session;
+use App\Tag;
 // use Illuminate\Contracts\Session\Session as SessionSession;
 // use Illuminate\Support\Facades\Auth;
 
@@ -75,22 +76,22 @@ class PostController extends Controller
 
         //per generare lo slug :url 
         $slug = Str::slug($new_post->title);
-        // $slug_base=$slug;
+        $slug_base = $slug;
 
-        /*
+
         //verifico che lo slug non esista gia nel database 
         $post_presente = Post::where('slug', $slug)->first();
-        $contatore=1;
+        $contatore = 1;
 
         //fin quando questa variabile ha una valore 
-        while($post_presente) {
-            $slug=$slug_base . "-" . $contatore;
+        while ($post_presente) {
+            $slug = $slug_base . "-" . $contatore;
             $contatore++;
-            $post_presente= Post::where('slug', $slug)->first();
+            $post_presente = Post::where('slug', $slug)->first();
         }
         //esco dal while, se lo slug nn lo trova nel db 
-       
-        */
+
+
         //assegno lo slug al post 
         $new_post->slug = $slug;
         $new_post->save();
@@ -127,9 +128,12 @@ class PostController extends Controller
     public function edit(Post $post)
     {
         $categories = Category::all();
+        $tags = Tag::all();
+
         $data = [
             'post' => $post,
-            'categories' => $categories
+            'categories' => $categories,
+            'tags' => $tags
         ];
         return view('admin.posts.edit', $data);
     }
@@ -146,10 +150,45 @@ class PostController extends Controller
         $request->validate([
             "title" => "required|max:255",
             "content" => "required",
-            'category_id' => 'nullable|exists:categories,id'
+            'category_id' => 'nullable|exists:categories,id',
+            'tags' => 'exists:tags,id'
+
         ]);
 
         $form_data = $request->all();
+
+        // verifico se il titolo ricevuto dal form è diverso dal vecchio titolo
+        if ($form_data['title'] != $post->title) {
+            // è stato modificato il titolo => devo modificare anche lo slug
+            // genero lo slug
+            $slug = Str::slug($form_data['title']);
+            $slug_base = $slug;
+            // verifico che lo slug non esista nel database
+            $post_presente = Post::where('slug', $slug)->first();
+            $contatore = 1;
+            // entro nel ciclo while se ho trovato un post con lo stesso $slug
+            while ($post_presente) {
+                // genero un nuovo slug aggiungendo il contatore alla fine
+                $slug = $slug_base . '-' . $contatore;
+                $contatore++;
+                $post_presente = Post::where('slug', $slug)->first();
+            }
+            // quando esco dal while sono sicuro che lo slug non esiste nel db
+            // assegno lo slug al post
+            $form_data['slug'] = $slug;
+        }
+
+
+
+        if (!key_exists("tags", $form_data)) {
+            $form_data["tags"] = [];
+        }
+        //elimina tutte le relazioni esistenti
+        // $post->tags()->detach();
+
+        // $post->tags()->attach($form_data["tags"]);
+
+        $post->tags()->sync($form_data["tags"]);
 
         $post->update($form_data);
         return redirect()->route('admin.posts.index');
@@ -167,6 +206,8 @@ class PostController extends Controller
         // return redirect()->route('admin.posts.index');
 
         $post = Post::findOrFail($id);
+        //nel momento in cui cancello un post da 'dettagli post'
+        $post->tags()->detach();
 
         $post->delete();
 
