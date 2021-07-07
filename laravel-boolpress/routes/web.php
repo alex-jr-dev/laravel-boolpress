@@ -14,18 +14,13 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-
-
-
 Route::get('/', "HomeController@index")->name("index");
 Route::get('/posts', "PostController@index")->name("posts.index");
 Route::get('/posts/{slug}', "PostController@show")->name("posts.show");
 
-
 Auth::routes();
 
 // Route::get('/home', 'HomeController@index')->name('home');
-
 
 Route::prefix('admin')
     ->namespace('Admin')
@@ -35,12 +30,11 @@ Route::prefix('admin')
         Route::get('/', 'HomeController@index')->name('index');
         Route::get('/categories', 'CategoryController@index')->name('categories.index');
         Route::get('/tags', 'TagController@index')->name('tags.index');
-
-        // Route::get('/posts/filter', 'PostController@index')->name('filter');
-
-
+        Route::get('/user_details', 'UserDetailController@index')->name('user_details.index');
+        Route::get('/user_details/create', 'UserDetailController@create')->name('user_details.create');
 
 
         //Genera tutte le rotte necessarie per la crud dei posts
         Route::resource("/posts", "PostController");
+        Route::resource("/user_details", "UserDetailController");
     });
