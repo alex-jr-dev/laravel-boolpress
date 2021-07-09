@@ -77,7 +77,7 @@
 
                 <div class="form-group">
                     <button type="submit" class="btn btn-success">
-                        Crea post
+                        Crea utente
                     </button>
                 </div>
             </form>

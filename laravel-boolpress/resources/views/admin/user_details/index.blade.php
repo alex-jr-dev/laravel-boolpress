@@ -8,7 +8,8 @@
             </div>
             <table class="table">
                 <div class="form-group">
-                    <a href="{{route("admin.user_details.create")}}" class="btn btn-success">
+                    {{-- <a href="{{route("admin.user_details.create")}}" class="btn btn-success"> --}}
+                    <a href="#" class="btn btn-success">
                         Crea utente
                         </button>
                     </a>

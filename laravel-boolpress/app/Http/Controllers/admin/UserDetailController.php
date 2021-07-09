@@ -17,7 +17,6 @@ class UserDetailController extends Controller
     {
         $users = UserDetail::all();
         return view ('admin.user_details.index', compact('users'));
-        
     }
 
     /**
